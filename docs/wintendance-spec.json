@@ -1,0 +1,521 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "contact": {
+      "name": "Misno Sugianto",
+      "email": "misnosugianto48@gmail.com"
+    },
+    "title": "Wintendance API",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5000/api/v1/",
+      "description": "dev"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "admin",
+          "users"
+        ]
+      },
+      "post": {
+        "security": [
+          {
+            "wintendanceAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXItRFNlYmZpbkVQcWc4b05VWEZSaE4iLCJpYXQiOjE3MTMxNTE1NTV9.RM6NKR7qb-p3WK5SQjiCiLZZcr-G1PDwm_yxEAkQxn8"
+            },
+            "name": "wintendanceAuth",
+            "in": "header"
+          }
+        ],
+        "tags": [
+          "admin",
+          "users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "example": "username1"
+                  },
+                  "password": {
+                    "example": "@Password1"
+                  },
+                  "role": {
+                    "required": [
+                      "ADMIN",
+                      "EMPLOYEE"
+                    ],
+                    "example": "EMPLOYEE"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "example": "created"
+                    },
+                    "message": {
+                      "example": "new employee has been craeted succefully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "example": "user-344hweohf64675ed"
+                        },
+                        "username": {
+                          "example": "username1"
+                        },
+                        "role": {
+                          "example": "EMPLOYEE"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "success create new employees"
+          },
+          "400": {
+            "description": "fail bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequest"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "fail unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                 "$ref": "#/components/schemas/unauthorized"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "fail forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                 "$ref": "#/components/schemas/forbidden"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "error server",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/internalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "tags": [
+          "users"
+        ]
+      },
+      "delete": {
+        "tags": [
+          "admin",
+          "users"
+        ]
+      }
+    },
+    "/users/{userId}/change-password": {
+      "patch": {
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/users/reset-password": {
+      "patch": {
+        "tags": [
+          "admin",
+          "users"
+        ]
+      }
+    },
+    "/departments": {
+      "post": {
+        "tags": [
+          "admin",
+          "departments"
+        ]
+      },
+      "get": {
+        "tags": [
+          "admin",
+          "departments"
+        ]
+      }
+    },
+    "/departments/{departmentId}": {
+      "put": {
+        "tags": [
+          "admin",
+          "departments"
+        ]
+      },
+      "delete": {
+        "tags": [
+          "admin",
+          "departments"
+        ]
+      }
+    },
+    "/positions": {
+      "post": {
+        "tags": [
+          "admin",
+          "positions"
+        ]
+      },
+      "get": {
+        "tags": [
+          "admin",
+          "positions"
+        ]
+      }
+    },
+    "/positions/{positionId}": {
+      "put": {
+        "tags": [
+          "admin",
+          "positions"
+        ]
+      },
+      "delete": {
+        "tags": [
+          "admin",
+          "positions"
+        ]
+      }
+    },
+    "/authentications": {
+      "post": {
+        "tags": [
+          "authentications"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json" :{
+              "schema":{
+                "type": "object",
+                "properties": {
+                  "username":{
+                    "example":"admin1"
+                  },
+                  "password":{
+                    "example": "passwordadmin1"
+                  }
+                }
+              }
+            }
+        }
+      },
+      "responses": {
+        "201":{
+          "description": "created authentications",
+          "content": {
+            "application/json":{
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status":{
+                    "example":"created"
+                  },
+                  "message":{"example":"authentication has been created succefully"},
+                  "data":{
+                    "type": "object",
+                    "properties": {
+                      "accessToken":{
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXItRW4tT0RQN1lyZyIsInVzZXJuYW1lIjoiYWRtaW4xIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzIxNzYyMjM1LCJleHAiOjE3MjE4NDg2MzV9.9DsENk9idQhV2DI4VfAfHwIG69LsQcPHm6p0yg5DQKk"
+                      },
+                      "refreshToken":{"example":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXItRW4tT0RQN1lyZyIsInVzZXJuYW1lIjoiYWRtaW4xIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzIxNzYyMjM1LCJleHAiOjE3MjE4NDg2MzV9.9DsENk9idQhV2DI4VfAfHwIG69LsQcPHm6p0yg5DQKk"},
+                      "user":{
+                        "type": "object",
+                        "properties": {
+                          "id":{
+                            "example": "user-ahedi7etdf7ew"
+                          },
+                          "username":{
+                            "example": "admin1"
+                          },
+                          "role":{
+                            "example": "ADMIN"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401":{
+          "description": "fail authentication",
+          "content": {
+            "application/json":{
+              "schema":{
+                "$ref": "#/components/schemas/unauthorized"
+              }
+            }
+          }
+        },
+        "500":{
+          "description": "error",
+          "content": {
+            "application/json":{
+              "schema":{
+                "$ref": "#/components/schemas/internalServerError"
+              }
+            }
+          }
+        }
+      }
+    },
+      "put": {
+        "tags": [
+          "authentications"
+        ]
+      },
+      "delete": {
+        "tags": [
+          "authentications"
+        ]
+      }
+    },
+    "/employees": {
+      "get": {
+        "tags": [
+          "admin",
+          "employees"
+        ]
+      },
+      "post": {
+        "tags": [
+          "employees"
+        ]
+      }
+    },
+    "/employees/{employeeId}": {
+      "patch": {
+        "tags": [
+          "employees"
+        ]
+      },
+      "get": {
+        "tags": [
+          "employees"
+        ]
+      }
+    },
+    "/employees/{employeeId}/avatar": {
+      "patch": {
+        "tags": [
+          "employees"
+        ]
+      }
+    },
+    "/attendance": {
+      "post": {
+        "tags": [
+          "attendance"
+        ]
+      },
+      "get": {
+        "tags": [
+          "attendance"
+        ]
+      }
+    },
+    "/attendance/{attendanceId}": {
+      "get": {
+        "tags": [
+          "attendance"
+        ]
+      }
+    },
+    "/attendance/{attendanceId}/clock-out": {
+      "patch": {
+        "tags": [
+          "attendance"
+        ]
+      }
+    },
+    "/leave-requests": {
+      "post": {
+        "tags": [
+          "leaves"
+        ]
+      },
+      "get": {
+        "tags": [
+          "leaves"
+        ]
+      }
+    },
+    "/leave-requests/{leaveRequestId}": {
+      "get": {
+        "tags": [
+          "leaves"
+        ]
+      },
+      "patch": {
+        "tags": [
+          "leaves"
+        ]
+      },
+      "delete": {
+        "tags": [
+          "leaves"
+        ]
+      }
+    },
+    "/leave-request/{leaveRequestId}/approval": {
+      "patch": {
+        "tags": [
+          "admin",
+          "leaves"
+        ]
+      }
+    },
+    "/reports/users/attendance": {
+      "get": {
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/reports/users/leaves": {
+      "get": {
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/reports/admin/attendance": {
+      "get": {
+        "tags": [
+          "admin",
+          "reports"
+        ]
+      }
+    },
+    "/reports/admin/leaves": {
+      "get": {
+        "tags": [
+          "admin",
+          "reports"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "badRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "fail"
+          },
+          "message": {
+            "example": "invalid payload"
+          }
+        }
+      },
+      "unauthorized":{
+        "type": "object",
+                  "properties": {
+                    "status": {
+                      "example": "fail"
+                    },
+                    "message": {
+                      "example": "unauthorized"
+                    }
+                  }
+      },
+      "forbidden":{
+        "type": "object",
+                  "properties": {
+                    "status": {
+                      "example": "fail"
+                    },
+                    "message": {
+                      "example": "forbidden"
+                    }
+                  }
+      },
+      "notFound":{
+        "type": "object",
+                  "properties": {
+                    "status": {
+                      "example": "fail"
+                    },
+                    "message": {
+                      "example": "not found"
+                    }
+                  }
+      },
+      "internalServerError":{
+        "type": "object",
+                  "properties": {
+                    "status": {
+                      "example": "error"
+                    },
+                    "message": {
+                      "example": "internal server error"
+                    }
+                  }
+      }
+    },
+    "securitySchemes": {
+      "wintendanceAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
