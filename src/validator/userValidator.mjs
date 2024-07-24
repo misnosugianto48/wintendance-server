@@ -11,4 +11,12 @@ const verifyUserCredentialValidator = Joi.object({
   password: Joi.string().required(),
 });
 
-export default { createUserValidator, verifyUserCredentialValidator };
+const editUsernameValidator = Joi.object({
+  username: Joi.string().min(5).optional(),
+});
+
+export default {
+  createUserValidator,
+  verifyUserCredentialValidator,
+  editUsernameValidator,
+};

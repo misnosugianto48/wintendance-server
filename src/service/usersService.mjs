@@ -57,13 +57,13 @@ const verifyUserCredential = async (payload) => {
   });
 
   if (!validUser) {
-    throw new AuthenticationError("credential not valid");
+    throw new AuthenticationError("invalid credentials");
   }
 
   const matchPassword = bcrypt.compare(user.password, validUser.password);
 
   if (!matchPassword) {
-    throw new AuthenticationError("credential not valid");
+    throw new AuthenticationError("invalid credentials");
   }
 
   return {
@@ -74,5 +74,52 @@ const verifyUserCredential = async (payload) => {
     updatedAt: validUser.updated_at,
   };
 };
+const editUsername = async (paylaod, id) => {
+  const user = validate(userValidator.editUsernameValidator, paylaod);
 
-export default { createUser, verifyUserCredential };
+  const userCount = await primaClient.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!userCount) {
+    throw new InvariantError("user not found");
+  }
+
+  const usernameExist = await primaClient.user.findUnique({
+    where: {
+      username: user.username,
+    },
+  });
+
+  if (usernameExist) {
+    throw new InvariantError("username already exists");
+  }
+
+  const data = {};
+
+  if (user.username) {
+    data.username = user.username;
+  }
+
+  return await primaClient.user.update({
+    where: {
+      id: id,
+    },
+    data: data,
+    select: {
+      id: true,
+    },
+  });
+};
+
+const editUserPassword = async (paylaod, id) => {};
+const deleteUser = async (paylaod, id) => {};
+export default {
+  createUser,
+  verifyUserCredential,
+  editUserPassword,
+  editUsername,
+  deleteUser,
+};

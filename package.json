@@ -2,7 +2,7 @@
   "name": "server-wintendance",
   "version": "1.0.0",
   "description": "digital attendance server",
-  "main": "src/app.js",
+  "main": "src/app.mjs",
   "directories": {
     "doc": "docs",
     "test": "tests"
@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node src/app.mjs",
     "dev": "nodemon src/app.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --setupFiles -i",
     "migrate:up": "npx prisma migrate dev",
     "migrate:create-only": "npx prisma migrate dev --create-only",
     "lint": "npx eslint src/",
