@@ -15,8 +15,13 @@ const editUsernameValidator = Joi.object({
   username: Joi.string().min(5).optional(),
 });
 
+const editUserPasswordValidator = Joi.object({
+  oldPassword: Joi.string().required(),
+  newPassword: Joi.string().min(8).required(),
+});
 export default {
   createUserValidator,
   verifyUserCredentialValidator,
   editUsernameValidator,
+  editUserPasswordValidator,
 };

@@ -1,10 +1,10 @@
-import { nanoid } from "nanoid";
 import { primaClient } from "../apps/database.mjs";
 import { InvariantError } from "../exceptions/InvariantError.mjs";
 import { AuthenticationError } from "../exceptions/AuthenticationError.mjs";
 import { validate } from "../validator/validate.mjs";
 import bcrypt from "bcrypt";
 import userValidator from "../validator/userValidator.mjs";
+import { NotFoundError } from "../exceptions/NotFoundError.mjs";
 
 const createUser = async (payload) => {
   const user = validate(userValidator.createUserValidator, payload);
@@ -23,7 +23,6 @@ const createUser = async (payload) => {
   const hash = await bcrypt.hash(password, 10);
 
   const newUser = {
-    id: `user-${nanoid(10)}`,
     username: payload.username,
     password: hash,
     role: payload.role,
@@ -84,7 +83,7 @@ const editUsername = async (paylaod, id) => {
   });
 
   if (!userCount) {
-    throw new InvariantError("user not found");
+    throw new NotFoundError("user not found");
   }
 
   const usernameExist = await primaClient.user.findUnique({
@@ -114,8 +113,70 @@ const editUsername = async (paylaod, id) => {
   });
 };
 
-const editUserPassword = async (paylaod, id) => {};
-const deleteUser = async (paylaod, id) => {};
+const editUserPassword = async (paylaod, id) => {
+  const passwordRequest = validate(
+    userValidator.editUserPasswordValidator,
+    paylaod
+  );
+
+  const user = await primaClient.user.findUnique({
+    where: {
+      id: id,
+    },
+    select: {
+      id: true,
+      password: true,
+    },
+  });
+
+  if (!user) {
+    throw new NotFoundError("id not found");
+  }
+
+  const correctPassword = await bcrypt.compare(
+    passwordRequest.oldPassword,
+    user.password
+  );
+
+  if (!correctPassword) {
+    throw new AuthenticationError("invalid credentials");
+  }
+
+  const password = await bcrypt.hash(passwordRequest.newPassword, 10);
+
+  const data = {
+    password: password,
+  };
+
+  return await primaClient.user.update({
+    where: {
+      id: id,
+    },
+    data: data,
+    select: {
+      id: true,
+    },
+  });
+};
+
+const deleteUser = async (id) => {
+  const user = await primaClient.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!user) {
+    throw new NotFoundError("id not found");
+  }
+
+  return await primaClient.user.delete({
+    where: {
+      id: id,
+    },
+  });
+};
+
 export default {
   createUser,
   verifyUserCredential,

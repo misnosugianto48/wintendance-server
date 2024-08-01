@@ -11,5 +11,15 @@ userRoutes.patch(
   authMiddleware(),
   usersController.patchUsers
 );
+userRoutes.patch(
+  "/users/:userId/change-password",
+  authMiddleware(),
+  usersController.patchChangePassword
+);
+userRoutes.delete(
+  "/users/:userId",
+  authMiddleware("ADMIN"),
+  usersController.deleteUser
+);
 
 export { userRoutes };

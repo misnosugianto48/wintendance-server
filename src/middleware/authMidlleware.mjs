@@ -2,6 +2,7 @@ import { AuthenticationError } from "../exceptions/AuthenticationError.mjs";
 import { AuthorizationError } from "../exceptions/AuthorizationError.mjs";
 import Jwt from "jsonwebtoken";
 import { config } from "../utils/config.mjs";
+import { InvariantError } from "../exceptions/InvariantError.mjs";
 
 const authMiddleware =
   (requiredRole = "EMPLOYEE") =>
@@ -36,4 +37,27 @@ const authMiddleware =
     }
   };
 
-export { authMiddleware };
+const verifyRefreshToken = (req, res, next) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return next(new InvariantError("invalid token"));
+  }
+
+  try {
+    const decodedToken = Jwt.decode(refreshToken);
+    Jwt.verify(refreshToken, config.jwtToken.refreshToken);
+
+    req.userId = decodedToken.id;
+    req.username = decodedToken.username;
+    req.role = decodedToken.role;
+    // req.refreshToken = refreshToken;
+    return next();
+  } catch (error) {
+    if (error) {
+      return next(new InvariantError("invalid token"));
+    }
+  }
+};
+
+export { authMiddleware, verifyRefreshToken };

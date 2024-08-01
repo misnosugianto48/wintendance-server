@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id         String   @id
+  id         Int      @id @default(autoincrement())
   username   String   @unique
   password   String
   role       ROLE     @default(EMPLOYEE)
@@ -30,7 +30,31 @@ enum ROLE {
 }
 
 model Authentication {
-  token String @unique
+  token String @id @unique
 
   @@map("authentications")
+}
+
+model Department {
+  id                     Int      @id @default(autoincrement())
+  department_name        String
+  department_description String
+  created_at             DateTime @default(now())
+  updated_at             DateTime @updatedAt
+
+  positions Position[]
+
+  @@map("departments")
+}
+
+model Position {
+  id                   Int        @id @default(autoincrement())
+  position_name        String
+  position_description String
+  department           Department @relation(fields: [department_id], references: [id])
+  department_id        Int
+  created_at           DateTime   @default(now())
+  updated_at           DateTime   @updatedAt
+
+  @@map("positions")
 }
