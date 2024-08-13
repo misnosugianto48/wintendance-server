@@ -21,6 +21,8 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  employee Employee?
+
   @@map("users")
 }
 
@@ -56,5 +58,64 @@ model Position {
   created_at           DateTime   @default(now())
   updated_at           DateTime   @updatedAt
 
+  employee Employee[]
+
   @@map("positions")
+}
+
+model Employee {
+  id                   String   @id
+  user_id              Int      @unique
+  user                 User     @relation(fields: [user_id], references: [id])
+  fullname             String
+  NIP                  String
+  position             Position @relation(fields: [position_id], references: [id])
+  position_id          Int
+  employee_picture     String?
+  job_type             JOB_TYPE @default(FULLTIME)
+  hire_date            DateTime
+  annual_leave_amount  Int      @default(12)
+  amount_of_leave_used Int?
+  leave_balance        Int?
+  creted_at            DateTime @default(now())
+  updated_at           DateTime @updatedAt
+
+  attendances Attendance[]
+
+  @@map("employees")
+}
+
+enum JOB_TYPE {
+  FULLTIME
+  PARTTIME
+  CONTRACT
+  INTERN
+}
+
+model Attendance {
+  id                     String            @id
+  employee               Employee          @relation(fields: [employee_id], references: [id])
+  employee_id            String
+  check_in               DateTime
+  check_out              DateTime?
+  attendance_status      ATTENDANCE_STATUS @default(ABSENT)
+  attendance_description String?
+  work_type              WORK_TYPE?
+  created_at             DateTime          @default(now())
+  updated_at             DateTime          @updatedAt
+
+  @@map("attendances")
+}
+
+enum ATTENDANCE_STATUS {
+  PRESENT
+  ABSENT
+  EARLY
+  PERMISSION
+  TOO_LATE
+}
+
+enum WORK_TYPE {
+  OFFICE
+  HOME
 }
