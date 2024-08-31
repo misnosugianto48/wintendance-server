@@ -9,6 +9,7 @@ import { departmentsRouter } from '../routes/departmentsRoutes.mjs';
 import { positionsRouter } from '../routes/positionsRoutes.mjs';
 import { employeeRouter } from '../routes/employeesRoutes.mjs';
 import { attendRouter } from '../routes/attendancesRoutes.mjs';
+import { leaveRouter } from '../routes/leaveRequestsRoutes.mjs';
 
 export const web = express();
 web.use(express.json());
@@ -23,5 +24,6 @@ web.use('/api/v1', departmentsRouter);
 web.use('/api/v1', positionsRouter);
 web.use('/api/v1', employeeRouter);
 web.use('/api/v1', attendRouter);
+web.use('/api/v1', leaveRouter);
 
 web.use(errorMidlleware);

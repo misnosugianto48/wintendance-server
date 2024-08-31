@@ -80,7 +80,8 @@ model Employee {
   creted_at            DateTime @default(now())
   updated_at           DateTime @updatedAt
 
-  attendances Attendance[]
+  attendances    Attendance[]
+  leave_requests Leave_Requet[]
 
   @@map("employees")
 }
@@ -118,4 +119,25 @@ enum ATTENDANCE_STATUS {
 enum WORK_TYPE {
   OFFICE
   HOME
+}
+
+model Leave_Requet {
+  id                   String         @id
+  employee             Employee       @relation(fields: [employee_id], references: [id])
+  employee_id          String
+  leave_start_date     DateTime
+  leave_end_date       DateTime
+  reason               String
+  request_status       REQUEST_STATUS @default(PENDING)
+  number_of_days_leave Int
+  created_at           DateTime       @default(now())
+  updated_at           DateTime       @updatedAt
+
+  @@map("leave_requests")
+}
+
+enum REQUEST_STATUS {
+  PENDING
+  APPROVED
+  REJECTED
 }
