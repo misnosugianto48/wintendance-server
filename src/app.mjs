@@ -2,7 +2,7 @@ import { web } from "./apps/web.mjs";
 import { config } from "./utils/config.mjs";
 
 web.get("/", (req, res) => {
-  res.send("Wintendance");
+  res.send("Hello Wintendance");
 });
 
 web.listen(config.app.port, () => {
